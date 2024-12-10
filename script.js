@@ -26,6 +26,7 @@ videos.forEach((video) => {
 
 // Preload and prepare next video
 function prepareVideo(video) {
+  console.log("Preparing video:", video.querySelector("source")?.src);
   return video
     .play()
     .then(() => {
@@ -33,9 +34,23 @@ function prepareVideo(video) {
       video.currentTime = 0; // Reset to start
     })
     .catch((error) => {
-      console.warn("Video preparation error:", error);
+      console.error(
+        "Video preparation error for source:",
+        video.querySelector("source")?.src
+      );
+      console.error("Video readyState:", video.readyState);
+      console.error("Video error message:", video.error?.message);
+      console.error("Full error:", error);
     });
 }
+
+// Add error event listeners to each video
+videos.forEach((video, index) => {
+  video.addEventListener("error", (e) => {
+    console.error(`Error loading video ${index}:`, video.error);
+    console.error("Source:", video.querySelector("source")?.src);
+  });
+});
 
 // Function to handle video transitions
 async function handleVideoTransition(newVideo, oldVideo = null) {
