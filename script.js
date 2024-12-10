@@ -1,3 +1,5 @@
+// script.js
+
 // Initialize scrollama
 const scroller = scrollama();
 
@@ -5,54 +7,69 @@ const scroller = scrollama();
 const videos = document.querySelectorAll(".video-container video");
 const steps = document.querySelectorAll(".step");
 
-// Create a map to track video states
-const videoStates = new Map();
-
-// Initialize video states and add event listeners
+// Initialize video states
 videos.forEach((video) => {
   video.load();
   video.loop = true;
   video.muted = true;
-  videoStates.set(video, { isPlaying: false });
+  video.playsinline = true;
 
-  // Add loadeddata event listener
+  // Add loadeddata event listener for first video
   video.addEventListener("loadeddata", () => {
     if (video === videos[0]) {
-      fadeInVideo(video);
-      // Activate first step
+      video.style.opacity = 1;
+      video.play(); // Start playing the first video immediately
       steps[0].classList.add("is-active");
     }
   });
 });
 
+// Preload and prepare next video
+function prepareVideo(video) {
+  return video
+    .play()
+    .then(() => {
+      video.pause(); // Pause it but keep it ready
+      video.currentTime = 0; // Reset to start
+    })
+    .catch((error) => {
+      console.warn("Video preparation error:", error);
+    });
+}
+
 // Function to handle video transitions
 async function handleVideoTransition(newVideo, oldVideo = null) {
   try {
-    if (oldVideo) {
-      oldVideo.style.opacity = 0;
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      oldVideo.pause();
-    }
-
+    // Start playing the new video while it's still invisible
     await newVideo.play();
-    fadeInVideo(newVideo);
+
+    // Quick crossfade between videos
+    newVideo.style.opacity = 1;
+
+    if (oldVideo) {
+      // Keep old video visible briefly during transition
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      oldVideo.style.opacity = 0;
+
+      // Wait for fade out, then pause old video
+      setTimeout(() => {
+        oldVideo.pause();
+      }, 500);
+    }
   } catch (error) {
     console.warn("Video transition error:", error);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      await newVideo.play();
-      fadeInVideo(newVideo);
-    } catch (retryError) {
-      console.error("Video playback failed after retry:", retryError);
-    }
   }
 }
 
-// Function to fade in a video
-function fadeInVideo(video) {
-  video.style.opacity = 1;
-  videoStates.set(video, { isPlaying: true });
-}
+// Preload all videos when page loads
+document.addEventListener("DOMContentLoaded", () => {
+  videos.forEach((video, index) => {
+    if (index !== 0) {
+      // Skip first video as it's already playing
+      prepareVideo(video);
+    }
+  });
+});
 
 // Setup the scrollama instance
 scroller
@@ -64,24 +81,49 @@ scroller
   .onStepEnter(async (response) => {
     // Remove active class from all steps
     steps.forEach((step) => step.classList.remove("is-active"));
+
     // Add active class to current step
     steps[response.index].classList.add("is-active");
 
+    // Handle video transition
     const currentVideo = videos[response.index];
     const previousVideo = Array.from(videos).find(
-      (video) => videoStates.get(video)?.isPlaying && video !== currentVideo
+      (video) => parseFloat(video.style.opacity) > 0 && video !== currentVideo
     );
 
     await handleVideoTransition(currentVideo, previousVideo);
-  })
-  .onStepExit((response) => {
-    // Optional: Handle step exit animations
   });
+
+// Scroll indicator
+
+// Hide scroll indicator after user starts scrolling
+let scrollIndicator = document.querySelector(".scroll-indicator");
+let hasScrolled = false;
+
+window.addEventListener(
+  "scroll",
+  () => {
+    if (!hasScrolled) {
+      hasScrolled = true;
+      scrollIndicator.classList.add("hidden");
+    }
+  },
+  { passive: true }
+);
+
+// Show indicator again if user returns to top
+window.addEventListener(
+  "scroll",
+  () => {
+    if (window.scrollY === 0) {
+      setTimeout(() => {
+        hasScrolled = false;
+        scrollIndicator.classList.remove("hidden");
+      }, 1000);
+    }
+  },
+  { passive: true }
+);
 
 // Handle browser resize
 window.addEventListener("resize", scroller.resize);
-
-// Preload all videos
-document.addEventListener("DOMContentLoaded", () => {
-  videos.forEach((video) => video.load());
-});

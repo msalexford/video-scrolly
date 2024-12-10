@@ -1,4 +1,7 @@
-/* Reset and base styles */
+/* style.css */
+
+/* #region - Base Styles */
+
 body,
 html {
   margin: 0;
@@ -16,11 +19,89 @@ html {
   margin: 0 auto;
 }
 
+/* #endregion */
+
+/* #region - Scroll Container */
+
 #scroll {
   position: relative;
 }
 
-/* Video section styling */
+/* #endregion */
+
+/* #region - Scroll Indicator */
+
+/* Scroll Indicator */
+.scroll-indicator {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 10;
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+.scroll-indicator.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scroll-indicator__text {
+  color: white;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.scroll-indicator__line {
+  width: 2px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.scroll-indicator__pill {
+  width: 100%;
+  height: 24px;
+  background: white;
+  border-radius: 2px;
+  animation: scrollPill 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes scrollPill {
+  0% {
+    transform: translateY(-100%);
+  }
+  15% {
+    transform: translateY(0);
+  }
+  85% {
+    transform: translateY(calc(64px - 24px));
+  }
+  100% {
+    transform: translateY(64px);
+  }
+}
+
+/* Hide scroll indicator after first scroll */
+@media (hover: none) {
+  .scroll-indicator {
+    display: none;
+  }
+}
+
+/* #endregion */
+
+/* #region - Video Styling */
+
+/* Fixed video container */
 .scroll__graphic {
   position: sticky;
   top: 0;
@@ -29,6 +110,7 @@ html {
   z-index: 0;
 }
 
+/* Video container and element styles */
 .video-container {
   position: absolute;
   top: 0;
@@ -44,81 +126,8 @@ html {
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transition: opacity 1.2s ease-in-out;
-}
-
-/* Text section styling */
-.scroll__text {
-  position: relative;
-  z-index: 1;
-  padding: 0 1rem;
-}
-
-.step {
-  min-height: 90vh;
-  margin: 40vh auto;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  max-width: 800px;
-}
-
-.step h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 1.2;
-  margin-bottom: 1.5rem;
-  color: #fff;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 0, 0, 0.3);
-  display: inline-block;
-  position: relative;
-  padding: 0.5rem 1rem;
-}
-
-/* Animated underline for titles */
-.step h2::after {
-  content: "";
-  position: absolute;
-  left: 1rem;
-  bottom: 0;
-  width: 0;
-  height: 2px;
-  background: #fff;
-  transition: width 0.8s ease-out;
-}
-
-/* Animate the underline when the step becomes active */
-.step.is-active h2::after {
-  width: calc(100% - 2rem); /* Account for padding */
-}
-
-.step p {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #fff;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
-  max-width: 650px;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(5px);
-  border-radius: 4px;
-  margin-top: 1rem;
-}
-
-/* Mobile responsive adjustments */
-@media (max-width: 768px) {
-  .step {
-    padding: 1rem;
-  }
-
-  h2 {
-    font-size: 2rem;
-  }
-
-  p {
-    font-size: 1.2rem;
-  }
+  transition: opacity 0.75s ease-in-out;
+  will-change: opacity;
 }
 
 /* Gradient overlay for better text readability */
@@ -131,9 +140,108 @@ html {
   bottom: 0;
   background: linear-gradient(
     0deg,
-    rgba(0, 0, 0, 0.4) 0%,
-    rgba(0, 0, 0, 0.2) 50%,
-    rgba(0, 0, 0, 0.4) 100%
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.3) 100%
   );
   pointer-events: none;
 }
+
+/* #endregion */
+
+/* #region - Text Styling */
+
+.scroll__text {
+  position: relative;
+  z-index: 1;
+  padding: 0 1rem;
+  /* Add padding to ensure last section triggers */
+  padding-bottom: 50vh;
+}
+
+/* Step styles */
+.step {
+  min-height: 90vh;
+  margin: 40vh auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 800px;
+  opacity: 0.3;
+  transition: opacity 0.5s ease;
+}
+
+/* First step positioning below viewport */
+.step:first-child {
+  margin-top: 90vh;
+}
+
+/* Active step state */
+.step.is-active {
+  opacity: 1;
+}
+
+/* Typography styles */
+.step h2 {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 0.7rem;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.75);
+}
+
+.step p {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  padding: 1.5rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* #endregion */
+
+/* #region - Responsive Styles */
+
+@media (max-width: 768px) {
+  .step {
+    margin: 25vh auto;
+    padding: 1.5rem;
+  }
+
+  .step h2 {
+    font-size: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .step p {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  /* Stronger gradient overlay for mobile */
+  .video-container::after {
+    background: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0.3) 50%,
+      rgba(0, 0, 0, 0.5) 100%
+    );
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .video-container video,
+  .step {
+    transition: none;
+  }
+}
+
+/* #endregion */

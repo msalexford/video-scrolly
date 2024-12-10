@@ -1,48 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paris 2024 Olympics Venues</title>
-    <link rel="stylesheet" href="./style.css">
-    <!-- Include scrollama library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/scrollama/2.2.3/scrollama.min.js"></script>
+    <title>Paris Olympics Venues</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="container">
-        <div id="scroll">
+    <main class="container" role="main">
+        <section id="scroll" class="section">
             <div class="scroll__graphic">
                 <div class="video-container">
-                    <video src="./video/3-eiffel-tower-stadium-mobile.mp4" muted loop></video>
-                    <video src="./video/4-champ-de-mars-arena-mobile.mp4" muted loop></video>
-                    <video src="./video/5-olympic-village-mobile.mp4" muted loop></video>
+                    <video src="video/3-eiffel-tower-stadium-mobile.mp4" type="video/mp4"></video>
+                    <video src="video/4-champ-de-mars-arena-mobile.mp4" type="video/mp4"></video>
+                    <video src="video/5-olympic-village-mobile.mp4" type="video/mp4"></video>
                 </div>
             </div>
 
             <div class="scroll__text">
                 <div class="step" data-step="0">
                     <h2>Temporary stadium in the Champ de Mars</h2>
-                    <p>Beach volleyball will be played at a temporary stadium, currently under
-                        construction, in the Champ de Mars near the Eiffel Tower.</p>
+                    <p>Beach volleyball will be played at a temporary stadium, currently under construction, in the
+                        Champ de Mars near the Eiffel Tower.</p>
                 </div>
 
                 <div class="step" data-step="1">
                     <h2>Judo and Wrestling Arena</h2>
-                    <p>Judo and wrestling competitions will take place at a temporary arena in
-                        the Champ de Mars.</p>
+                    <p>Judo and wrestling competitions will take place at a temporary arena in the Champ de Mars.</p>
                 </div>
 
                 <div class="step" data-step="2">
                     <h2>Olympic Village</h2>
-                    <p>The Olympic village lies along the Seine's northern bank and will house
-                        more than 20,000 athletes during the Olympics and Paralympic Games combined.</p>
+                    <p>The Olympic village lies along the Seine's northern bank and will house more than 20,000 athletes
+                        during the Olympics and Paralympic Games combined.</p>
                 </div>
             </div>
-        </div>
-    </div>
-    <script src="./script.js"></script>
+
+            <div class="scroll-indicator">
+                <div class="scroll-indicator__text">Scroll to explore</div>
+                <div class="scroll-indicator__line">
+                    <div class="scroll-indicator__pill"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/scrollama/3.0.1/scrollama.min.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>
